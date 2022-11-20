@@ -1,12 +1,16 @@
-import gradle.kotlin.dsl.accessors._60db6352840e4faf938231443a53bad2.java
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-
 plugins{
-    //This is a project that has java code that can be built and can be used in another project
     id("application") //plugin to compile, test Java code
+    id("my-plugin-file")
 }
 
-//Configure java version
-java{
-    toolchain.languageVersion.set(JavaLanguageVersion.of(11));
+//Register a new task
+tasks.register<Zip>("package"){
+
+    group = "My custom tasks"
+    description = "To package jars and run time dependencies into a Zip"
+
+    from(tasks.jar) //take the output of jar task
+    from(configurations.runtimeClasspath)// Run time dependencies
+
+    destinationDirectory.set(layout.buildDirectory.dir("distribution"))//Setting output location
 }
